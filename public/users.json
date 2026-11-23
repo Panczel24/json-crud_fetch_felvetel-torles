@@ -1,0 +1,25 @@
+{
+  "users": [
+    {
+      "nev": "Kiss Tamás",
+      "osztaly": "12.D",
+      "id": "4lYtdOTBSg8"
+    },
+    {
+      "nev": "Nagy Katalin",
+      "osztaly": "12.E",
+      "id": "3YoN2xEJ1XQ"
+    },
+    {
+      "nev": "Balogh Zoltán",
+      "osztaly": "11.E",
+      "id": "iMEuoUauyh4"
+    },
+    {
+      "nev": "Bogi",
+      "osztaly": "13.E",
+      "id": "GaxMGoQhhjo"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
