@@ -7,6 +7,7 @@ function App() {
   const [users, setUsers] = useState<User[]>([])
   const [nev, setNev] = useState("")
   const [osztaly, setOsztaly] = useState("")
+  const [kredit, setKredit] = useState(0);
 
   useEffect(() => {
     async function fetchUsers() {
@@ -24,6 +25,8 @@ function App() {
   }, [])
 
 
+
+
   async function handleFelhasznaloFelvetel(e) {
     e.preventDefault();
     const ujFelhasznalo = {
@@ -37,6 +40,9 @@ function App() {
         headers: { "Content-type": "application/json" },
         body: JSON.stringify(ujFelhasznalo)
       });
+      if (!response.ok) {
+        throw new Error("Felvétel nem sikerült")
+      }
       const felhasznalo: User = await response.json();
       setUsers((elozo) => [...elozo, felhasznalo])
       setNev("")
@@ -45,9 +51,121 @@ function App() {
 
     } catch (err) {
       console.log("hiba történt felvételnél:" + err.message)
+    }
+
+  }
+
+
+  async function handleTorles(id: string) {
+    if (!confirm("Biztos törölni akarod?")) {
+      return;
+    }
+    try {
+      const response = await fetch("http://localhost:3000/users/" + id, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("Tőrlés nem sikerült")
+      }
+      setUsers((elozo) => elozo.filter((user) => user.id !== id))
+    } catch (error) {
+      console.log("Hiba" + error.message)
+
+    }
+  }
+
+  async function handleKredit(user: User) {
+    if (!confirm("Biztosan meg szeretnén növelni " + user.nev + "kreditjeinek számát 1000-el?")) {
+      return;
+    }
+    try {
+      const response = await fetch("http://localhost:3000/users/" + user.id, {
+        method: "PATCH",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({ kredit: user.kredit + 1000 })
+
+      });
+      if (!response.ok) {
+        throw new Error("Kredit emelés nem sikerült")
+      }
+      setUsers((elozo) =>
+        elozo.map(users => users.id === user.id ? { ...users, kredit: users.kredit + 1000 } : users,
+        )
+      )
+
+    } catch (error) {
+      console.log("Hiba" + error.message)
 
     }
 
+  }
+
+  async function handleKreditMinusz(user: User) {
+    if (!confirm("Biztosan le szeretnéd csökkenteni " + user.nev + "kreditjeinek számát 1000-el?")) {
+      return;
+    }
+    try {
+      const response = await fetch("http://localhost:3000/users/" + user.id, {
+        method: "PATCH",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({ kredit: user.kredit - 1000 })
+
+      });
+      if (!response.ok) {
+        throw new Error("Kredit csökkentés nem sikerült")
+      }
+      setUsers((elozo) =>
+        elozo.map(users => users.id === user.id ? { ...users, kredit: users.kredit - 1000 } : users,
+        )
+      )
+
+    } catch (error) {
+      console.log("Hiba" + error.message)
+
+    }
+
+  }
+
+  async function handleNullaKredit(user: User) {
+    if (!confirm("Biztosan nullázni szeretnéd " + user.nev + " kreditjeit?")) {
+      return;
+    }
+    try {
+      const response = await fetch("http://localhost:3000/users/" + user.id, {
+        method: "PATCH",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({ kredit: 0 })
+      });
+      if (!response.ok) {
+        throw new Error("Kredit nullázás nem sikerült")
+      }
+      setUsers((elozo) =>
+        elozo.map(users => users.id === user.id ? { ...users, kredit: 0 } : users)
+      )
+    } catch (error) {
+      console.log("Hiba" + error.message)
+    }
+  }
+
+  async function handleOnalloKredit(user: User) {
+    if (!confirm("Biztosan nullázni szeretnéd " + user.nev + " kreditjeit?")) {
+      return;
+    }
+    try {
+      const response = await fetch("http://localhost:3000/users/" + user.id, {
+        method: "PATCH",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({ kredit: 0 })
+      });
+      if (!response.ok) {
+        throw new Error("Kredit nullázás nem sikerült")
+      }
+      setUsers((elozo) =>
+        elozo.map(users => users.id === user.id ? { ...users, kredit: 0 } : users)
+      )
+    } catch (error) {
+      console.log("Hiba" + error.message)
+    }
   }
 
 
@@ -64,6 +182,8 @@ function App() {
           <tr>
             <th>Név</th>
             <th>Osztály</th>
+            <th>Kredit</th>
+            <th>Tankötelesség</th>
           </tr>
         </thead>
         <tbody>
@@ -71,7 +191,13 @@ function App() {
             <tr key={user.id}>
               <td>{user.nev}</td>
               <td>{user.osztaly}</td>
-              <button className='bton btn-danger' onClick={()=> handleTorles(user.id.toString())}></button>
+              <td>{user.kredit}</td>
+              <td>{user.tankoteles ? "Tanköteles" : "Nem tanköteles"}</td>
+              <button className='btn' onClick={() => handleTorles(user.id.toString())}>❌</button>
+              <button type="button" className="btn btn-primary" onClick={() => handleKredit(user)}>+1000</button>
+              <button className="btn btn-primary" onClick={() => handleKreditMinusz(user)}>-1000</button>
+              <button className="btn btn-primary" onClick={() => handleNullaKredit(user)}>Kredit nullázása</button>
+              <button className='btn btn-primary'>Önálló kredit felvétele</button>
             </tr>
           ))}
 

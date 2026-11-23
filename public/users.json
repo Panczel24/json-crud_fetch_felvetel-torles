@@ -1,23 +1,24 @@
 {
   "users": [
     {
-      "nev": "Kiss Tamás",
-      "osztaly": "12.D",
-      "id": "4lYtdOTBSg8"
-    },
-    {
       "nev": "Nagy Katalin",
       "osztaly": "12.E",
+      "kredit": 3000,
+      "tankoteles": true,
       "id": "3YoN2xEJ1XQ"
     },
     {
       "nev": "Balogh Zoltán",
       "osztaly": "11.E",
+      "kredit": 0,
+      "tankoteles": true,
       "id": "iMEuoUauyh4"
     },
     {
       "nev": "Bogi",
       "osztaly": "13.E",
+      "kredit": 0,
+      "tankoteles": false,
       "id": "GaxMGoQhhjo"
     }
   ],
