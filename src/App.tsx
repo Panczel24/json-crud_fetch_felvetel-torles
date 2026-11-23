@@ -71,6 +71,7 @@ function App() {
             <tr key={user.id}>
               <td>{user.nev}</td>
               <td>{user.osztaly}</td>
+              <button className='bton btn-danger' onClick={()=> handleTorles(user.id.toString())}></button>
             </tr>
           ))}
 
